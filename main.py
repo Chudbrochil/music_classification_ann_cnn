@@ -14,13 +14,15 @@ def main():
     png_dir = base_dir + "/pngfiles"
 
     # Get all the base file names
-    #music_file_names = gen_music_file_names(au_file_dir)
+    music_file_names = gen_music_file_names(au_file_dir)#, "blues.00000")
 
     # Converting all our .au files to .wav files
-    #wav_file_names = convert_to_wav(music_file_names, wav_file_dir)
+    wav_file_names = convert_to_wav(music_file_names, wav_file_dir)
 
     # Take all the wav files and make them into pictures.
-    for wav_file in os.listdir(wav_file_dir):
+    # NOTE: Use this if you don't want to regenerate the wav files.
+    #for wav_file in os.listdir(wav_file_dir):
+    for wav_file in wav_file_names:
         make_spectrogram(os.path.join(wav_file_dir, wav_file), png_dir)
 
 
@@ -64,13 +66,15 @@ def make_spectrogram(file_name, png_dir):
 # gen_music_file_names()
 # Generating the full list of all music files in our code repo. Takes .au files
 # and puts them into a list of absolute file paths.
-def gen_music_file_names(au_file_dir):
+def gen_music_file_names(au_file_dir, single_file = ""):
     music_file_names = []
     for directory in os.listdir(au_file_dir):
         if os.path.isdir(os.path.join(au_file_dir,directory)):
             for file in os.listdir(os.path.join(au_file_dir,directory)):
                 full_path = os.path.join(au_file_dir,directory,file)
-                if full_path.endswith(".au"):
+                # If single_file is specified (i.e. "blues.00000"),
+                # then this will only process that file.
+                if full_path.endswith(".au") and single_file in file:
                     music_file_names.append(full_path)
     return music_file_names
 
