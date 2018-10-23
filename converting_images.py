@@ -9,7 +9,8 @@ current_wd = os.getcwd()
 for file in os.listdir(current_wd + "/pngfiles"):
     print(file)
     image = imread(current_wd + "/pngfiles/" + file)
-    image = image.reshape([124, 174, 4])
+    image = image[:, :, :3]
+    image = image.reshape([124, 174, 3])
     X_train.append(image)
 
     if "blues" in file:
