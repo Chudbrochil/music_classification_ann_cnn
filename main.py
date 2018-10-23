@@ -9,30 +9,30 @@ from matplotlib.pyplot import specgram
 def main():
 
     base_dir = "/home/anthony/git/music_classification_lstm_rnn"
-    au_file_dir = base_dir + "/genres"
-    wav_file_dir = base_dir + "/wavfiles"
+    au_dir = base_dir + "/genres"
+    wav_dir = base_dir + "/wavfiles"
     png_dir = base_dir + "/pngfiles"
 
     # Get all the base file names
-    music_file_names = gen_music_file_names(au_file_dir)#, "blues.00000")
+    music_file_names = gen_music_file_names(au_dir)#, "blues.00000")
 
     # Converting all our .au files to .wav files
-    wav_file_names = convert_to_wav(music_file_names, wav_file_dir)
+    wav_file_names = convert_to_wav(music_file_names, wav_dir)
 
     # Take all the wav files and make them into pictures.
     # NOTE: Use this if you don't want to regenerate the wav files.
     #for wav_file in os.listdir(wav_file_dir):
     for wav_file in wav_file_names:
-        make_spectrogram(os.path.join(wav_file_dir, wav_file), png_dir)
+        make_spectrogram(os.path.join(wav_dir, wav_file), png_dir)
 
 
 # convert_to_wav()
 # Converts a given list of music filename's into wav files.
-def convert_to_wav(music_file_names, wav_file_dir):
+def convert_to_wav(music_file_names, wav_dir):
     wav_file_names = []
     for music_file_name in music_file_names:
         music_file_as_wav = ("".join(music_file_name.split(".")[0:2]) + ".wav").split("/")[-1]
-        output_file_name = os.path.join(wav_file_dir, music_file_as_wav)
+        output_file_name = os.path.join(wav_dir, music_file_as_wav)
         os.system("sox -e signed-integer " + music_file_name + " " + output_file_name)
         wav_file_names.append(output_file_name)
     return wav_file_names
@@ -41,11 +41,6 @@ def convert_to_wav(music_file_names, wav_file_dir):
 # make_spectrogram()
 # Makes a given music file (.wav) into a spectrogram and saves it as a png.
 def make_spectrogram(file_name, png_dir):
-    # sample_rate, samples = wavfile.read(file_name)
-    # frequencies, times, spectrogram = signal.spectrogram(samples, sample_rate)
-    # plt.pcolormesh(times, frequencies, np.log(spectrogram))
-    # plt.show()
-
 
     sample_rate, samples = wavfile.read(file_name)
     figure = specgram(samples, Fs=sample_rate, xextent=(0,30))
@@ -60,18 +55,19 @@ def make_spectrogram(file_name, png_dir):
 
     # Saving the figure while removing white space border
     # NOTE: If you want smaller pictures, reduce the dpi.
-    plt.savefig(os.path.join(png_dir,base_name + ".png"), bbox_inches='tight', pad_inches=-0.1, dpi=100)
+    plt.savefig(os.path.join(png_dir, base_name + ".png"), bbox_inches='tight',
+                pad_inches=-0.1, dpi=100)
 
 
 # gen_music_file_names()
 # Generating the full list of all music files in our code repo. Takes .au files
 # and puts them into a list of absolute file paths.
-def gen_music_file_names(au_file_dir, single_file = ""):
+def gen_music_file_names(au_dir, single_file = ""):
     music_file_names = []
-    for directory in os.listdir(au_file_dir):
-        if os.path.isdir(os.path.join(au_file_dir,directory)):
-            for file in os.listdir(os.path.join(au_file_dir,directory)):
-                full_path = os.path.join(au_file_dir,directory,file)
+    for directory in os.listdir(au_dir):
+        if os.path.isdir(os.path.join(au_dir, directory)):
+            for file in os.listdir(os.path.join(au_dir, directory)):
+                full_path = os.path.join(au_file_dir, directory, file)
                 # If single_file is specified (i.e. "blues.00000"),
                 # then this will only process that file.
                 if full_path.endswith(".au") and single_file in file:
