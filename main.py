@@ -9,12 +9,15 @@ from matplotlib.pyplot import specgram
 def main():
 
     base_dir = "/home/anthony/git/music_classification_lstm_rnn"
-    au_dir = base_dir + "/genres"
-    wav_dir = base_dir + "/wavfiles"
-    png_dir = base_dir + "/pngfiles"
+    #au_dir = base_dir + "/genres"
+    #wav_dir = base_dir + "/wavfiles"
+    #png_dir = base_dir + "/pngfiles"
+    au_dir = base_dir + "/validation"
+    wav_dir = base_dir + "/validation_wavfiles"
+    png_dir = base_dir + "/validation_pngfiles"
 
     # Get all the base file names
-    music_file_names = gen_music_file_names(au_dir)#, "blues.00000")
+    music_file_names = gen_music_file_names(au_dir)
 
     # Converting all our .au files to .wav files
     wav_file_names = convert_to_wav(music_file_names, wav_dir)
@@ -51,7 +54,7 @@ def make_spectrogram(file_name, png_dir):
 
     frame1.axes.get_xaxis().set_visible(False)
     frame1.axes.get_yaxis().set_visible(False)
-    base_name = os.path.basename(file_name).strip(".wav")
+    base_name = (os.path.basename(file_name))[:-4]
 
     # Saving the figure while removing white space border
     # NOTE: If you want smaller pictures, reduce the dpi.
@@ -64,14 +67,22 @@ def make_spectrogram(file_name, png_dir):
 # and puts them into a list of absolute file paths.
 def gen_music_file_names(au_dir, single_file = ""):
     music_file_names = []
-    for directory in os.listdir(au_dir):
-        if os.path.isdir(os.path.join(au_dir, directory)):
-            for file in os.listdir(os.path.join(au_dir, directory)):
-                full_path = os.path.join(au_file_dir, directory, file)
-                # If single_file is specified (i.e. "blues.00000"),
-                # then this will only process that file.
-                if full_path.endswith(".au") and single_file in file:
-                    music_file_names.append(full_path)
+    list_of_files = []
+    for file_or_dir in os.listdir(au_dir):
+        pre_path = os.path.join(au_dir, file_or_dir)
+        if os.path.isdir(pre_path):
+            for file in os.listdir(pre_path):
+                list_of_files.append(os.path.join(full_path, file))
+        elif os.path.isfile(pre_path):
+            list_of_files.append(pre_path)
+
+    # Figuring out which files we should be returning
+    for file in list_of_files:
+        # If single_file is specified (i.e. "blues.00000"),
+        # then this will only process that file.
+        if file.endswith(".au") and single_file in file:
+            music_file_names.append(file)
+
     return music_file_names
 
 
