@@ -1,0 +1,7 @@
+genres/
+validation/
+validation.zip
+genres.zip
+wavfiles/
+validation_wavfiles/
+trained_music_classifier.h5
