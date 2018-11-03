@@ -14,7 +14,7 @@ K.clear_session()
 AMOUNT_OF_IMAGE_SPLITS = 10
 
 # Load in pre-trained model for music classification
-model = load_model("trained_music_classifier.h5")
+model = load_model("models/best_model_100epochs.h5")
 
 X_test = np.load("X_test.dat")
 # reshape so in form for CNN-Keras
