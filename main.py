@@ -11,15 +11,23 @@ def main():
 
     base_dir = "/home/anthony/git/music_classification_lstm_rnn"
     # Training
-    split_size = 10
+    split_size = 5
     au_dir = base_dir + "/genres"
     wav_dir = base_dir + "/split_" + str(split_size) + "/wavfiles"
     png_dir = base_dir + "/split_" + str(split_size) + "/pngfiles"
-    # Validation
-    #au_dir = base_dir + "/validation"
-    #wav_dir = base_dir + "/split_" + str(split_size) + "/validation_wavfiles"
-    #png_dir = base_dir + "/split_" + str(split_size) + "/validation_pngfiles"
+    make_fresh_data(au_dir, wav_dir, png_dir, split_size)
 
+    # Validation
+    au_dir = base_dir + "/validation"
+    wav_dir = base_dir + "/split_" + str(split_size) + "/validation_wavfiles"
+    png_dir = base_dir + "/split_" + str(split_size) + "/validation_pngfiles"
+    make_fresh_data(au_dir, wav_dir, png_dir, split_size)
+
+
+# make_fresh_data()
+# Meta method that takes .au files and makes split png files for both training
+# and validation files.
+def make_fresh_data(au_dir, wav_dir, png_dir, split_size):
     # Get all the base file names
     music_file_names = gen_music_file_names(au_dir)
 
@@ -80,7 +88,12 @@ def cleanup_last_file(wav_dir, split_size):
 
     # This index string will look like "-011"
     index_we_dont_want = int(30 / split_size) + 1
-    index_string = "-0" + str(index_we_dont_want)
+    if split_size < 5:
+        index_string = "-0"
+    else:
+        index_string = "-00"
+
+    index_string += str(index_we_dont_want)
 
     for file in os.listdir(wav_dir):
         full_path = os.path.join(wav_dir,file)
