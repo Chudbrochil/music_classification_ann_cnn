@@ -15,6 +15,10 @@ K.clear_session()
 model = load_model("trained_music_classifier.h5")
 
 X_test = np.load("X_test.dat")
+# reshape so in form for CNN-Keras
+X_test = X_test.reshape(X_test.shape[0], 174, 124, 1)
+print(X_test.shape)
+
 # normalize testing data
 X_test = X_test / 255
 
@@ -47,6 +51,41 @@ for prediction in predictions:
         prediction_names.append("rock")
 prediction_names
 
+def convert_predictions_to_votes(prediction_names):
+    print(len(prediction_names))
+    # convert predictions to votes
+    final_predictions = []
+
+    keys = {"blues", "classical", "country", "disco", "hiphop", "jazz", "metal", "pop", "reggae", "rock"}
+    current_song_vote = {key: 0 for key in keys}
+    print(current_song_vote)
+
+    counter = 0
+    for prediction in prediction_names:
+        if (counter % 10 == 0) and counter != 0:
+            # get top vote
+            top_vote = max(current_song_vote, key=current_song_vote.get)
+            # add vote to list of final predictioons
+            final_predictions.append(top_vote)
+            # reset current votes
+            current_song_vote = {key: 0 for key in keys}
+            counter = 0
+
+        counter += 1
+        current_song_vote[prediction] += 1
+
+    # get the last set of votes (still 10 votes, but since we don't go to next one, it never gets grabbed)
+    top_vote = max(current_song_vote, key=current_song_vote.get)
+    final_predictions.append(top_vote)
+    print("Final prediction length " + str(len(final_predictions)))
+
+    return final_predictions
+
+final_predictions = convert_predictions_to_votes(prediction_names)
+print(final_predictions)
+
+
+# can just use original names
 list_of_file_names = []
 for file in os.listdir(os.getcwd() + "/validation_pngfiles"):
     file = file.replace("png", "au")
@@ -59,7 +98,7 @@ output_file = open("output.csv", "w")
 output_file.write("id,class\n")
 
 i = 0
-for prediction in prediction_names:
+for prediction in final_predictions:
     output_file.write("%s,%s\n" % (list_of_file_names[i], prediction))
     i += 1
 
