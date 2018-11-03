@@ -11,6 +11,8 @@ import os
 from keras import backend as K
 K.clear_session()
 
+AMOUNT_OF_IMAGE_SPLITS = 10
+
 # Load in pre-trained model for music classification
 model = load_model("trained_music_classifier.h5")
 
@@ -62,7 +64,7 @@ def convert_predictions_to_votes(prediction_names):
 
     counter = 0
     for prediction in prediction_names:
-        if (counter % 10 == 0) and counter != 0:
+        if (counter % AMOUNT_OF_IMAGE_SPLITS == 0) and counter != 0:
             # get top vote
             top_vote = max(current_song_vote, key=current_song_vote.get)
             # add vote to list of final predictioons
