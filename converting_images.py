@@ -16,7 +16,9 @@ def convert_training_images():
     for file in os.listdir(current_wd + "/" + size_of_split + "/pngfiles"):
         print(file)
         image = imread(current_wd + "/" + size_of_split + "/pngfiles/" + file)
-        image = image[:, :, 0]
+        print(image[:,:,3])
+        image = image[:, :, :3]
+        print(image.shape)
         # image = image.reshape([124, 174, 3])
         X_train.append(image)
 
@@ -54,7 +56,7 @@ def convert_validation_images():
     for file in os.listdir(current_wd + "/" + size_of_split + "/validation_pngfiles"):
         print(file)
         image = imread(current_wd + "/" + size_of_split + "/validation_pngfiles/" + file)
-        image = image[:, :, 0]
+        image = image[:, :, :3]
         # image = image.reshape([124, 174, 3])
         X_test.append(image)
 
