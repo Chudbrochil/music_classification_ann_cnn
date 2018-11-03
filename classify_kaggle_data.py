@@ -11,12 +11,12 @@ import os
 from keras import backend as K
 K.clear_session()
 
-AMOUNT_OF_IMAGE_SPLITS = 10
+AMOUNT_OF_IMAGE_SPLITS = 30 / 2 # images / split#
 
 # Load in pre-trained model for music classification
-model = load_model("models/best_model_100epochs.h5")
+model = load_model("models/best_model_2splits_50epochs.h5")
 
-X_test = np.load("X_test.dat")
+X_test = np.load("X_test_split_2.dat")
 # reshape so in form for CNN-Keras
 X_test = X_test.reshape(X_test.shape[0], 174, 124, 1)
 print(X_test.shape)
@@ -27,7 +27,7 @@ X_test = X_test / 255
 # make predictions on validation data from Kaggle
 predictions = model.predict_classes(X_test, verbose=1)
 # Converting predictions to genre names
-predictions
+# print(predictions)
 
 prediction_names = []
 for prediction in predictions:
@@ -51,7 +51,7 @@ for prediction in predictions:
         prediction_names.append("reggae")
     else:
         prediction_names.append("rock")
-prediction_names
+# prediction_names
 
 def convert_predictions_to_votes(prediction_names):
     print(len(prediction_names))
