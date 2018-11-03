@@ -11,14 +11,14 @@ def main():
 
     base_dir = "/home/anthony/git/music_classification_lstm_rnn"
     # Training
-    split_size = 2
-    #au_dir = base_dir + "/genres"
-    #wav_dir = base_dir + "/split_" + str(split_size) + "/wavfiles"
-    #png_dir = base_dir + "/split_" + str(split_size) + "/pngfiles"
+    split_size = 10
+    au_dir = base_dir + "/genres"
+    wav_dir = base_dir + "/split_" + str(split_size) + "/wavfiles"
+    png_dir = base_dir + "/split_" + str(split_size) + "/pngfiles"
     # Validation
-    au_dir = base_dir + "/validation"
-    wav_dir = base_dir + "/split_" + str(split_size) + "/validation_wavfiles"
-    png_dir = base_dir + "/split_" + str(split_size) + "/validation_pngfiles"
+    #au_dir = base_dir + "/validation"
+    #wav_dir = base_dir + "/split_" + str(split_size) + "/validation_wavfiles"
+    #png_dir = base_dir + "/split_" + str(split_size) + "/validation_pngfiles"
 
     # Get all the base file names
     music_file_names = gen_music_file_names(au_dir)
