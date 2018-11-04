@@ -142,6 +142,8 @@ def make_spectrogram(file_name, png_dir):
     plt.close()
 
 
+# convert_training_images()
+# Converts our mass of training .png files into a .dat representing numpy arrays.
 def convert_training_images(split_size):
     X_train = []
     y_train = []
@@ -182,6 +184,9 @@ def convert_training_images(split_size):
     np.array(X_train).dump("X_train_" + str(split_size) + ".dat")
     np.array(y_train).dump("y_train_" + str(split_size) + ".dat")
 
+
+# convert_validation_images()
+# Converts our validation .png images into a .dat file representing numpy arrays.
 def convert_validation_images(split_size):
     X_test = []
     current_wd = os.getcwd()
