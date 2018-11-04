@@ -11,14 +11,17 @@ import os
 from keras import backend as K
 K.clear_session()
 
-AMOUNT_OF_IMAGE_SPLITS = 30 / 2 # images / split#
+# Change this based upon what split size of the data we are doing
+split_size = 3
+
+AMOUNT_OF_IMAGE_SPLITS = 30 / split_size # images / split#
 
 # Load in pre-trained model for music classification
-model = load_model("models/best_model_2splits_50epochs.h5")
+model = load_model("models/best_model_2splits_50epochs_highlr.h5")
 
-X_test = np.load("X_test_split_2.dat")
+X_test = np.load("X_test_3.dat")
 # reshape so in form for CNN-Keras
-X_test = X_test.reshape(X_test.shape[0], 174, 124, 1)
+#X_test = X_test.reshape(X_test.shape[0], 174, 124, 3)
 print(X_test.shape)
 
 # normalize testing data
@@ -27,7 +30,7 @@ X_test = X_test / 255
 # make predictions on validation data from Kaggle
 predictions = model.predict_classes(X_test, verbose=1)
 # Converting predictions to genre names
-# print(predictions)
+print(predictions)
 
 prediction_names = []
 for prediction in predictions:
@@ -89,16 +92,11 @@ print(final_predictions)
 
 # can just use original names
 list_of_file_names = []
-for file in os.listdir(os.getcwd() + "/validation_pngfiles"):
-    file = file.replace("png", "au")
-    file = file.split("ion")
-    file = file[0] + "ion" + "." + file[1]
-    print(file)
+for file in os.listdir(os.getcwd() + "/validation"):
     list_of_file_names.append(file)
 
 output_file = open("output.csv", "w")
 output_file.write("id,class\n")
-
 i = 0
 for prediction in final_predictions:
     output_file.write("%s,%s\n" % (list_of_file_names[i], prediction))

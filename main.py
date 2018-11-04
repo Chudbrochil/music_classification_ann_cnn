@@ -142,14 +142,14 @@ def make_spectrogram(file_name, png_dir):
     plt.close()
 
 
-def convert_training_images():
+def convert_training_images(split_size):
     X_train = []
     y_train = []
     label = []
     current_wd = os.getcwd()
-    for file in os.listdir(current_wd + "/color/split_" + str(size_of_split) + "/pngfiles"):
+    for file in os.listdir(current_wd + "/color/split_" + str(split_size) + "/pngfiles"):
         print(file)
-        image = imread(current_wd + "/color/split_" + str(size_of_split) + "/pngfiles/" + file)
+        image = imread(current_wd + "/color/split_" + str(split_size) + "/pngfiles/" + file)
         image = image[:, :, :3]
         # image = image.reshape([124, 174, 3])
         X_train.append(image)
@@ -179,22 +179,22 @@ def convert_training_images():
 
     print(np.array(X_train).shape)
     print(np.array(y_train).shape)
-    np.array(X_train).dump("X_train_" + str(size_of_split) + ".dat")
-    np.array(y_train).dump("y_train_" + str(size_of_split) + ".dat")
+    np.array(X_train).dump("X_train_" + str(split_size) + ".dat")
+    np.array(y_train).dump("y_train_" + str(split_size) + ".dat")
 
-def convert_validation_images():
+def convert_validation_images(split_size):
     X_test = []
     current_wd = os.getcwd()
-    for file in os.listdir(current_wd + "/color/split_" + str(size_of_split) + "/validation_pngfiles"):
+    for file in os.listdir(current_wd + "/color/split_" + str(split_size) + "/validation_pngfiles"):
         print(file)
-        image = imread(current_wd + "/color/split_" + str(size_of_split) + "/validation_pngfiles/" + file)
+        image = imread(current_wd + "/color/split_" + str(split_size) + "/validation_pngfiles/" + file)
         image = image[:, :, :3]
         # image = image.reshape([124, 174, 3])
         print(image.shape)
         X_test.append(image)
 
     print(np.array(X_test).shape)
-    np.array(X_test).dump("X_test_" + str(size_of_split) + ".dat")
+    np.array(X_test).dump("X_test_" + str(split_size) + ".dat")
 
 
 
