@@ -5,23 +5,37 @@ import numpy as np
 import os
 from matplotlib.pyplot import specgram
 import matplotlib
+from skimage.io import imread
 
 
 def main():
 
-    base_dir = "/home/anthony/git/music_classification_lstm_rnn"
-    # Training
-    split_size = 5
-    au_dir = base_dir + "/genres"
-    wav_dir = base_dir + "/split_" + str(split_size) + "/wavfiles"
-    png_dir = base_dir + "/split_" + str(split_size) + "/pngfiles"
-    make_fresh_data(au_dir, wav_dir, png_dir, split_size)
+    # NOTE: What do you want to do?
+    make_images = False
+    converting = True
+    split_size = 3
 
-    # Validation
-    au_dir = base_dir + "/validation"
-    wav_dir = base_dir + "/split_" + str(split_size) + "/validation_wavfiles"
-    png_dir = base_dir + "/split_" + str(split_size) + "/validation_pngfiles"
-    make_fresh_data(au_dir, wav_dir, png_dir, split_size)
+
+    # Step 0
+    if make_images == True:
+        base_dir = "/home/anthony/git/music_classification_lstm_rnn"
+        # Training
+        au_dir = base_dir + "/genres"
+        wav_dir = base_dir + "/color/split_" + str(split_size) + "/wavfiles"
+        png_dir = base_dir + "/color/split_" + str(split_size) + "/pngfiles"
+        make_fresh_data(au_dir, wav_dir, png_dir, split_size)
+
+        # Validation
+        au_dir = base_dir + "/validation"
+        wav_dir = base_dir + "/color/split_" + str(split_size) + "/validation_wavfiles"
+        png_dir = base_dir + "/color/split_" + str(split_size) + "/validation_pngfiles"
+        make_fresh_data(au_dir, wav_dir, png_dir, split_size)
+
+    # Step 1
+    # Converting images into .dat files (numpy arrays) in preparation for training.
+    if converting == True:
+        convert_training_images(split_size)
+        convert_validation_images(split_size)
 
 
 # make_fresh_data()
@@ -29,7 +43,7 @@ def main():
 # and validation files.
 def make_fresh_data(au_dir, wav_dir, png_dir, split_size):
     # Get all the base file names
-    music_file_names = gen_music_file_names(au_dir)
+    music_file_names = gen_music_file_names(au_dir)#, "blues.00000")
 
     # Converting all our .au files to .wav files
     convert_to_wav(music_file_names, wav_dir, split_size)
@@ -110,7 +124,7 @@ def make_spectrogram(file_name, png_dir):
     #figure = specgram(samples, Fs=sample_rate, xextent=(0,30)) # NOTE: Old spectrogram...
     frequencies, times, spectrogram = signal.spectrogram(samples, sample_rate)
     normalize = matplotlib.colors.Normalize(vmin = -10, vmax = 10)
-    plt.pcolormesh(times, frequencies, np.log(spectrogram), norm=normalize, cmap='gray')
+    plt.pcolormesh(times, frequencies, np.log(spectrogram), norm=None, cmap='nipy_spectral')
     frame1 = plt.gca()
     fig = plt.gcf()
     # NOTE: This is inspired from original size of 483x356 images. 483 / 200 = 2.415
@@ -126,6 +140,63 @@ def make_spectrogram(file_name, png_dir):
                 pad_inches=-0.1, dpi=100)
 
     plt.close()
+
+
+def convert_training_images():
+    X_train = []
+    y_train = []
+    label = []
+    current_wd = os.getcwd()
+    for file in os.listdir(current_wd + "/color/split_" + str(size_of_split) + "/pngfiles"):
+        print(file)
+        image = imread(current_wd + "/color/split_" + str(size_of_split) + "/pngfiles/" + file)
+        image = image[:, :, :3]
+        # image = image.reshape([124, 174, 3])
+        X_train.append(image)
+
+        if "blues" in file:
+            label = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        elif "classical" in file:
+            label = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+        elif "country" in file:
+            label = [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+        elif "disco" in file:
+            label = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+        elif "hiphop" in file:
+            label = [0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+        elif "jazz" in file:
+            label = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+        elif "metal" in file:
+            label = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
+        elif "pop" in file:
+            label = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+        elif "reggae" in file:
+            label = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
+        elif "rock" in file:
+            label = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+
+        y_train.append(label)
+
+    print(np.array(X_train).shape)
+    print(np.array(y_train).shape)
+    np.array(X_train).dump("X_train_" + str(size_of_split) + ".dat")
+    np.array(y_train).dump("y_train_" + str(size_of_split) + ".dat")
+
+def convert_validation_images():
+    X_test = []
+    current_wd = os.getcwd()
+    for file in os.listdir(current_wd + "/color/split_" + str(size_of_split) + "/validation_pngfiles"):
+        print(file)
+        image = imread(current_wd + "/color/split_" + str(size_of_split) + "/validation_pngfiles/" + file)
+        image = image[:, :, :3]
+        # image = image.reshape([124, 174, 3])
+        print(image.shape)
+        X_test.append(image)
+
+    print(np.array(X_test).shape)
+    np.array(X_test).dump("X_test_" + str(size_of_split) + ".dat")
+
+
 
 
 if __name__ == "__main__":
