@@ -6,13 +6,15 @@ import os
 from matplotlib.pyplot import specgram
 import matplotlib
 from skimage.io import imread
+import librosa
+import librosa.display
 
 
 def main():
 
     # NOTE: What do you want to do?
-    make_images = False
-    converting = True
+    make_images = True
+    converting = False
     split_size = 3
 
 
@@ -21,14 +23,14 @@ def main():
         base_dir = "/home/anthony/git/music_classification_lstm_rnn"
         # Training
         au_dir = base_dir + "/genres"
-        wav_dir = base_dir + "/color/split_" + str(split_size) + "/wavfiles"
-        png_dir = base_dir + "/color/split_" + str(split_size) + "/pngfiles"
+        wav_dir = base_dir + "/mel/split_" + str(split_size) + "/wavfiles"
+        png_dir = base_dir + "/mel/split_" + str(split_size) + "/pngfiles"
         make_fresh_data(au_dir, wav_dir, png_dir, split_size)
 
         # Validation
         au_dir = base_dir + "/validation"
-        wav_dir = base_dir + "/color/split_" + str(split_size) + "/validation_wavfiles"
-        png_dir = base_dir + "/color/split_" + str(split_size) + "/validation_pngfiles"
+        wav_dir = base_dir + "/mel/split_" + str(split_size) + "/validation_wavfiles"
+        png_dir = base_dir + "/mel/split_" + str(split_size) + "/validation_pngfiles"
         make_fresh_data(au_dir, wav_dir, png_dir, split_size)
 
     # Step 1
@@ -118,13 +120,23 @@ def cleanup_last_file(wav_dir, split_size):
 # make_spectrogram()
 # Makes a given music file (.wav) into a spectrogram and saves it as a png.
 def make_spectrogram(file_name, png_dir):
+    #sample_rate, samples = wavfile.read(file_name)
+
+    # Oldest spectrograms....
+    #figure = specgram(samples, Fs=sample_rate, xextent=(0,30))
+
+    # Second oldest spectrogram...
+    #frequencies, times, spectrogram = signal.spectrogram(samples, sample_rate)
+    #normalize = matplotlib.colors.Normalize(vmin = -10, vmax = 10)
+    #plt.pcolormesh(times, frequencies, np.log(spectrogram), norm=None, cmap='nipy_spectral')
 
     print("Making spectrogram for file_name: \n%s" % file_name)
-    sample_rate, samples = wavfile.read(file_name)
-    #figure = specgram(samples, Fs=sample_rate, xextent=(0,30)) # NOTE: Old spectrogram...
-    frequencies, times, spectrogram = signal.spectrogram(samples, sample_rate)
-    normalize = matplotlib.colors.Normalize(vmin = -10, vmax = 10)
-    plt.pcolormesh(times, frequencies, np.log(spectrogram), norm=None, cmap='nipy_spectral')
+    y, sr = librosa.load(file_name)
+    S = librosa.feature.melspectrogram(y, sr=sr, n_mels=128)
+    log_S = librosa.amplitude_to_db(S, ref=np.max)
+
+    librosa.display.specshow(log_S, sr=sr)
+
     frame1 = plt.gca()
     fig = plt.gcf()
     # NOTE: This is inspired from original size of 483x356 images. 483 / 200 = 2.415
