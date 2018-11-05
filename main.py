@@ -15,7 +15,7 @@ def main():
     # NOTE: What do you want to do?
     make_images = False
     converting = True
-    split_size = 3
+    split_size = 2
 
 
     # Step 0
