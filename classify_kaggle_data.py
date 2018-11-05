@@ -17,7 +17,7 @@ split_size = 3
 AMOUNT_OF_IMAGE_SPLITS = 30 / split_size # images / split#
 
 # Load in pre-trained model for music classification
-model = load_model("models/best_model_2splits_50epochs_highlr.h5")
+model = load_model("models/best_model_3splits_200epochs_midLR")
 
 X_test = np.load("X_test_3.dat")
 # reshape so in form for CNN-Keras

@@ -13,8 +13,8 @@ import librosa.display
 def main():
 
     # NOTE: What do you want to do?
-    make_images = True
-    converting = False
+    make_images = False
+    converting = True
     split_size = 3
 
 
@@ -161,9 +161,9 @@ def convert_training_images(split_size):
     y_train = []
     label = []
     current_wd = os.getcwd()
-    for file in os.listdir(current_wd + "/color/split_" + str(split_size) + "/pngfiles"):
+    for file in os.listdir(current_wd + "/mel/split_" + str(split_size) + "/pngfiles"):
         print(file)
-        image = imread(current_wd + "/color/split_" + str(split_size) + "/pngfiles/" + file)
+        image = imread(current_wd + "/mel/split_" + str(split_size) + "/pngfiles/" + file)
         image = image[:, :, :3]
         # image = image.reshape([124, 174, 3])
         X_train.append(image)
@@ -202,9 +202,9 @@ def convert_training_images(split_size):
 def convert_validation_images(split_size):
     X_test = []
     current_wd = os.getcwd()
-    for file in os.listdir(current_wd + "/color/split_" + str(split_size) + "/validation_pngfiles"):
+    for file in os.listdir(current_wd + "/mel/split_" + str(split_size) + "/validation_pngfiles"):
         print(file)
-        image = imread(current_wd + "/color/split_" + str(split_size) + "/validation_pngfiles/" + file)
+        image = imread(current_wd + "/mel/split_" + str(split_size) + "/validation_pngfiles/" + file)
         image = image[:, :, :3]
         # image = image.reshape([124, 174, 3])
         print(image.shape)
