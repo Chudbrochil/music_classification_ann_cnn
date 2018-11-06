@@ -14,13 +14,16 @@ def main():
 
     # NOTE: What do you want to do?
     make_images = False
-    converting = True
-    split_size = 2
+    converting = False
+    extract_features = True
+
+    split_size = 3
 
 
     # Step 0
     if make_images == True:
-        base_dir = "/home/anthony/git/music_classification_lstm_rnn"
+        # base_dir = "/home/anthony/git/music_classification_lstm_rnn"
+        base_dir = "C:/Users/Owner/code/music_classification"
         # Training
         au_dir = base_dir + "/genres"
         wav_dir = base_dir + "/mel/split_" + str(split_size) + "/wavfiles"
@@ -38,6 +41,10 @@ def main():
     if converting == True:
         convert_training_images(split_size)
         convert_validation_images(split_size)
+    if extract_features == True:
+        base_dir = "C:/Users/Owner/code/music_classification_lstmrnn"
+        wav_dir = base_dir + "/mel/split_" + str(split_size) + "/wavfiles"
+        new_feature_extractor(wav_dir, split_size)
 
 
 # make_fresh_data()
@@ -53,9 +60,10 @@ def make_fresh_data(au_dir, wav_dir, png_dir, split_size):
     cleanup_last_file(wav_dir, split_size)
 
     # Take all the wav files and make them into pictures.
+    """
     for wav_file in os.listdir(wav_dir):
        make_spectrogram(os.path.join(wav_dir, wav_file), png_dir)
-
+    """
 
 # gen_music_file_names()
 # Generating the full list of all music files in our code repo. Takes .au files
@@ -153,6 +161,50 @@ def make_spectrogram(file_name, png_dir):
 
     plt.close()
 
+def new_feature_extractor(wav_dir, split_size):
+    X_train = []
+    y_train = []
+    label = []
+
+    for file in os.listdir(wav_dir):
+        file = os.path.join(wav_dir, file)
+        print(file)
+        y, sr = librosa.load(file) # load in wav file using librosa
+        # D = np.abs(librosa.stft(y))
+        # print(D)
+        spectral_centroid = np.ravel(spectral_centroid)
+        X_train.append(spectral_centroid)
+
+        if "blues" in file:
+            label = [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        elif "classical" in file:
+            label = [0, 1, 0, 0, 0, 0, 0, 0, 0, 0]
+        elif "country" in file:
+            label = [0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+        elif "disco" in file:
+            label = [0, 0, 0, 1, 0, 0, 0, 0, 0, 0]
+        elif "hiphop" in file:
+            label = [0, 0, 0, 0, 1, 0, 0, 0, 0, 0]
+        elif "jazz" in file:
+            label = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
+        elif "metal" in file:
+            label = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0]
+        elif "pop" in file:
+            label = [0, 0, 0, 0, 0, 0, 0, 1, 0, 0]
+        elif "reggae" in file:
+            label = [0, 0, 0, 0, 0, 0, 0, 0, 1, 0]
+        elif "rock" in file:
+            label = [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+
+        y_train.append(label)
+        print(np.array(X_train).shape)
+
+    print(np.array(X_train).shape)
+    print(np.array(y_train).shape)
+
+    np.array(X_train).dump("X_spec_cen_train_" + str(split_size) + ".dat")
+    np.array(y_train).dump("y_spec_cen_train_" + str(split_size) + ".dat")
+
 
 # convert_training_images()
 # Converts our mass of training .png files into a .dat representing numpy arrays.
@@ -193,8 +245,8 @@ def convert_training_images(split_size):
 
     print(np.array(X_train).shape)
     print(np.array(y_train).shape)
-    np.array(X_train).dump("X_train_" + str(split_size) + ".dat")
-    np.array(y_train).dump("y_train_" + str(split_size) + ".dat")
+    np.array(X_train).dump("X_mel_train_" + str(split_size) + ".dat")
+    np.array(y_train).dump("y_mel_train_" + str(split_size) + ".dat")
 
 
 # convert_validation_images()
@@ -211,7 +263,7 @@ def convert_validation_images(split_size):
         X_test.append(image)
 
     print(np.array(X_test).shape)
-    np.array(X_test).dump("X_test_" + str(split_size) + ".dat")
+    np.array(X_test).dump("X_mel_test_" + str(split_size) + ".dat")
 
 
 
