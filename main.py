@@ -13,27 +13,28 @@ import librosa.display
 def main():
 
     # NOTE: What do you want to do?
-    make_images = False
+    make_images = True
     converting = False
-    extract_features = True
+    extract_features = False
 
     split_size = 3
 
 
     # Step 0
     if make_images == True:
-        # base_dir = "/home/anthony/git/music_classification_lstm_rnn"
-        base_dir = "C:/Users/Owner/code/music_classification"
+        base_dir = "/home/anthony/git/music_classification_lstm_rnn"
+        # base_dir = "C:/Users/Owner/code/music_classification"
+
         # Training
         au_dir = base_dir + "/genres"
-        wav_dir = base_dir + "/mel/split_" + str(split_size) + "/wavfiles"
-        png_dir = base_dir + "/mel/split_" + str(split_size) + "/pngfiles"
+        wav_dir = base_dir + "/mel-newsize/split_" + str(split_size) + "/wavfiles"
+        png_dir = base_dir + "/mel-newsize/split_" + str(split_size) + "/pngfiles"
         make_fresh_data(au_dir, wav_dir, png_dir, split_size)
 
         # Validation
         au_dir = base_dir + "/validation"
-        wav_dir = base_dir + "/mel/split_" + str(split_size) + "/validation_wavfiles"
-        png_dir = base_dir + "/mel/split_" + str(split_size) + "/validation_pngfiles"
+        wav_dir = base_dir + "/mel-newsize/split_" + str(split_size) + "/validation_wavfiles"
+        png_dir = base_dir + "/mel-newsize/split_" + str(split_size) + "/validation_pngfiles"
         make_fresh_data(au_dir, wav_dir, png_dir, split_size)
 
     # Step 1
@@ -41,6 +42,8 @@ def main():
     if converting == True:
         convert_training_images(split_size)
         convert_validation_images(split_size)
+
+    # Extracting additional features from the images.
     if extract_features == True:
         base_dir = "C:/Users/Owner/code/music_classification_lstmrnn"
         wav_dir = base_dir + "/mel/split_" + str(split_size) + "/wavfiles"
@@ -60,10 +63,9 @@ def make_fresh_data(au_dir, wav_dir, png_dir, split_size):
     cleanup_last_file(wav_dir, split_size)
 
     # Take all the wav files and make them into pictures.
-    """
     for wav_file in os.listdir(wav_dir):
        make_spectrogram(os.path.join(wav_dir, wav_file), png_dir)
-    """
+
 
 # gen_music_file_names()
 # Generating the full list of all music files in our code repo. Takes .au files
@@ -147,17 +149,20 @@ def make_spectrogram(file_name, png_dir):
 
     frame1 = plt.gca()
     fig = plt.gcf()
+
     # NOTE: This is inspired from original size of 483x356 images. 483 / 200 = 2.415
-    fig.set_size_inches(2.415, 1.78)
+    #fig.set_size_inches(2.415, 1.78)
+
+    # NOTE: _Very_ specific values in order to get 128x128 images
+    fig.set_size_inches(1.82,1.84)
 
     frame1.axes.get_xaxis().set_visible(False)
     frame1.axes.get_yaxis().set_visible(False)
 
     # Saving the figure while removing white space border
-    # NOTE: If you want smaller pictures, reduce the dpi.
     base_name = (os.path.basename(file_name))[:-4]
     plt.savefig(os.path.join(png_dir, base_name + ".png"), bbox_inches='tight',
-                pad_inches=-0.1, dpi=100)
+                pad_inches=-0.1)
 
     plt.close()
 
