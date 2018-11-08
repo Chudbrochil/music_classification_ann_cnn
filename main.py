@@ -13,9 +13,9 @@ import librosa.display
 def main():
 
     # NOTE: What do you want to do?
-    make_images = True
+    make_images = False
     converting = False
-    extract_features = False
+    extract_features = True
 
     split_size = 3
 
@@ -174,9 +174,12 @@ def new_feature_extractor(wav_dir, split_size):
     for file in os.listdir(wav_dir):
         file = os.path.join(wav_dir, file)
         print(file)
+        if (file == "C:/Users/Owner/code/music_classification_lstmrnn/mel/split_3/wavfiles\classical.00051-010.wav") or (file == "C:/Users/Owner/code/music_classification_lstmrnn/mel/split_3/wavfiles\country.00007-010.wav") or (file == "C:/Users/Owner/code/music_classification_lstmrnn/mel/split_3/wavfiles\disco.00014-010.wav") or (file == "C:/Users/Owner/code/music_classification_lstmrnn/mel/split_3/wavfiles\hiphop.00032-010.wav"):
+            continue
         y, sr = librosa.load(file) # load in wav file using librosa
         # D = np.abs(librosa.stft(y))
         # print(D)
+        spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr)
         spectral_centroid = np.ravel(spectral_centroid)
         X_train.append(spectral_centroid)
 
@@ -218,9 +221,9 @@ def convert_training_images(split_size):
     y_train = []
     label = []
     current_wd = os.getcwd()
-    for file in os.listdir(current_wd + "/mel/split_" + str(split_size) + "/pngfiles"):
+    for file in os.listdir(current_wd + "/mel-newsize/split_" + str(split_size) + "/pngfiles"):
         print(file)
-        image = imread(current_wd + "/mel/split_" + str(split_size) + "/pngfiles/" + file)
+        image = imread(current_wd + "/mel-newsize/split_" + str(split_size) + "/pngfiles/" + file)
         image = image[:, :, :3]
         # image = image.reshape([124, 174, 3])
         X_train.append(image)
@@ -250,8 +253,8 @@ def convert_training_images(split_size):
 
     print(np.array(X_train).shape)
     print(np.array(y_train).shape)
-    np.array(X_train).dump("X_mel_train_" + str(split_size) + ".dat")
-    np.array(y_train).dump("y_mel_train_" + str(split_size) + ".dat")
+    np.array(X_train).dump("X_melnew_train_" + str(split_size) + ".dat")
+    np.array(y_train).dump("y_melnew_train_" + str(split_size) + ".dat")
 
 
 # convert_validation_images()
@@ -259,16 +262,16 @@ def convert_training_images(split_size):
 def convert_validation_images(split_size):
     X_test = []
     current_wd = os.getcwd()
-    for file in os.listdir(current_wd + "/mel/split_" + str(split_size) + "/validation_pngfiles"):
+    for file in os.listdir(current_wd + "/mel-newsize/split_" + str(split_size) + "/validation_pngfiles"):
         print(file)
-        image = imread(current_wd + "/mel/split_" + str(split_size) + "/validation_pngfiles/" + file)
+        image = imread(current_wd + "/mel-newsize/split_" + str(split_size) + "/validation_pngfiles/" + file)
         image = image[:, :, :3]
         # image = image.reshape([124, 174, 3])
         print(image.shape)
         X_test.append(image)
 
     print(np.array(X_test).shape)
-    np.array(X_test).dump("X_mel_test_" + str(split_size) + ".dat")
+    np.array(X_test).dump("X_melnew_test_" + str(split_size) + ".dat")
 
 
 
