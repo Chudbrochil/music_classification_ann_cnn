@@ -20,7 +20,8 @@ def main():
     amount_of_image_splits = 30 / split_size # images / split#
 
     # Load in pre-trained model for music classification
-    model = load_model("models/best_model_3splits_mel.h5")
+    model = load_model("models/best_model_128_480epochs")
+    #model = load_model("models/rand_save")
 
     # load in testing data
     X_test = np.load("X_mel128_test_3.dat")
