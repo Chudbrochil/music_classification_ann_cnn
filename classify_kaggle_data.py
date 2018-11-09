@@ -23,7 +23,7 @@ def main():
     model = load_model("models/best_model_3splits_mel.h5")
 
     # load in testing data
-    X_test = np.load("X_melnew_test_3.dat")
+    X_test = np.load("X_mel128_test_3.dat")
     # reshape so in form for CNN-Keras, only need to do for 1 channel images (black and white)
     #X_test = X_test.reshape(X_test.shape[0], 174, 124, 3)
     print(X_test.shape)

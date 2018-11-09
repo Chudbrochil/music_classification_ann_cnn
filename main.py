@@ -14,11 +14,10 @@ def main():
 
     # NOTE: What do you want to do?
     make_images = False
-    converting = False
-    extract_features = True
+    converting = True
+    extract_features = False
 
     split_size = 3
-
 
     # Step 0
     if make_images == True:
@@ -27,14 +26,14 @@ def main():
 
         # Training
         au_dir = base_dir + "/genres"
-        wav_dir = base_dir + "/mel-newsize/split_" + str(split_size) + "/wavfiles"
-        png_dir = base_dir + "/mel-newsize/split_" + str(split_size) + "/pngfiles"
+        wav_dir = base_dir + "/mel-256/split_" + str(split_size) + "/wavfiles"
+        png_dir = base_dir + "/mel-256/split_" + str(split_size) + "/pngfiles"
         make_fresh_data(au_dir, wav_dir, png_dir, split_size)
 
         # Validation
         au_dir = base_dir + "/validation"
-        wav_dir = base_dir + "/mel-newsize/split_" + str(split_size) + "/validation_wavfiles"
-        png_dir = base_dir + "/mel-newsize/split_" + str(split_size) + "/validation_pngfiles"
+        wav_dir = base_dir + "/mel-256/split_" + str(split_size) + "/validation_wavfiles"
+        png_dir = base_dir + "/mel-256/split_" + str(split_size) + "/validation_pngfiles"
         make_fresh_data(au_dir, wav_dir, png_dir, split_size)
 
     # Step 1
@@ -150,11 +149,9 @@ def make_spectrogram(file_name, png_dir):
     frame1 = plt.gca()
     fig = plt.gcf()
 
-    # NOTE: This is inspired from original size of 483x356 images. 483 / 200 = 2.415
-    #fig.set_size_inches(2.415, 1.78)
-
-    # NOTE: _Very_ specific values in order to get 128x128 images
-    fig.set_size_inches(1.82,1.84)
+    #fig.set_size_inches(2.415, 1.78) # inspired by 483x356 images..., 483 / 200 = 2.415
+    #fig.set_size_inches(1.82,1.84) # 128x128
+    fig.set_size_inches(3.48, 3.50) # 256x256
 
     frame1.axes.get_xaxis().set_visible(False)
     frame1.axes.get_yaxis().set_visible(False)
@@ -221,9 +218,9 @@ def convert_training_images(split_size):
     y_train = []
     label = []
     current_wd = os.getcwd()
-    for file in os.listdir(current_wd + "/mel-newsize/split_" + str(split_size) + "/pngfiles"):
+    for file in os.listdir(current_wd + "/mel-256/split_" + str(split_size) + "/pngfiles"):
         print(file)
-        image = imread(current_wd + "/mel-newsize/split_" + str(split_size) + "/pngfiles/" + file)
+        image = imread(current_wd + "/mel-256/split_" + str(split_size) + "/pngfiles/" + file)
         image = image[:, :, :3]
         # image = image.reshape([124, 174, 3])
         X_train.append(image)
@@ -262,16 +259,16 @@ def convert_training_images(split_size):
 def convert_validation_images(split_size):
     X_test = []
     current_wd = os.getcwd()
-    for file in os.listdir(current_wd + "/mel-newsize/split_" + str(split_size) + "/validation_pngfiles"):
+    for file in os.listdir(current_wd + "/mel-256/split_" + str(split_size) + "/validation_pngfiles"):
         print(file)
-        image = imread(current_wd + "/mel-newsize/split_" + str(split_size) + "/validation_pngfiles/" + file)
+        image = imread(current_wd + "/mel-256/split_" + str(split_size) + "/validation_pngfiles/" + file)
         image = image[:, :, :3]
         # image = image.reshape([124, 174, 3])
         print(image.shape)
         X_test.append(image)
 
     print(np.array(X_test).shape)
-    np.array(X_test).dump("X_melnew_test_" + str(split_size) + ".dat")
+    np.array(X_test).dump("X_mel256_test_" + str(split_size) + ".dat")
 
 
 
