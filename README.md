@@ -4,32 +4,43 @@ Tristin Glunt - tglunt3unm.edu
 
 
 Required libraries for execution:
-An Nvidia CUDA-enabled GPU (Tristin and I have a GTX1060 and GTX1050 respectively for example)
-Tensorflow GPU and it's related libraries (CuDNN, CUDA Toolkit, CUPTI)
-- Please reference: https://www.tensorflow.org/install/gpu
 Anaconda (at least 4.5.11)
 - We need NumPy, SciPy, matplotlib, keras
 librosa (at least 0.6.2)
 
 
+Recommended libraries:
+A CUDA-capable video card (We used a GTX 1050 and a GTX 1060)
+TensorFlow GPU and related libraries (CuDNN, CUDA Toolkit, CUPTI, etc.)
+	- Please reference: https://www.tensorflow.org/install/gpu
+
+
 Overview of files available in this repo:
 main.py
 This file is what is used to start processing data, specifically the .au files we were given.
-There are two boolean flags at the top that decide whether you make images out of the .au files and
-whether you convert these images into numpy arrays (pickled as .dat files). This is also where we
-decide what split we will use for the sound/image files. Split size of 3 gives you 10 3s files for
-processing.
+There are three boolean flags at the top that decide whether you make images out of the .au files and
+whether you convert these images into numpy arrays (pickled as .dat files) and whether you want to use
+special feature extraction (central spectroid). This is also where we decide what split we will use 
+for the sound/image files. Split size of 3 gives you 10 3s files for processing.
+All 3 feature extraction methods (straight pixels, mel spectrograms, and central spectroid).
+
 
 ann_classify.ipynb
-This is the Jupyter notebook where we train a deep Artificial Neural Network.
+This is the Jupyter notebook where we train a deep Artificial Neural Network only.
 
 aws_classify.ipynb
 This is the Jupyter notebook that is setup to use a high-powered AWS server. Currently the p2.xlarge
-instance has a K80 GPU to use so it is ~10x more powerful than my GTX1050 or Tristin's GTX1060.
-Thus, the network is a bit wider, deeper and higher fidelity than the others.
+instance has a K80 GPU to use. Upon testing it is only marginally better than our GTX1050/1060 hardware.
+In order to make it worth it, we'd need to spend $5/hr or more which isn't really feasible for this.
 
 cnn_classify.ipynb
-This is the Jupyter notebook where we train a deep Convolutional Neural Network.
+This is the Jupyter notebook where we train a deep Convolutional Neural Network only.
+
+build_cnn_data-augmentation.ipynb
+This was ultimately what we were using in our final testing and tuning. It involves training a CNN
+and leaves an additional cell for running more epochs later on. This is where we make confusion
+matrices for CNN/ANN as well as do data augmentation for the data. The data augmentation is an
+important step for improving accuracy on validation and testing.
 
 classify_kaggle_data.py
 Here we take the output from our Jupyter notebook and actually output our predictions to a .csv file.
@@ -60,7 +71,7 @@ for processing by the network you want to use.
 
 Run the Jupyter notebook corresponding to the type of network you want to use. The most realistic one
 to use is cnn_classify.ipynb.
-The very first cell will verify that you are using a CUDA-enabled GPU. If you are not, none of this will work.
+The very first cell will verify that you are using a CUDA-enabled GPU. If you are not, this will be pretty slow.
 Inside the Jupyter notebook you will want to analyze the cell under "Build the CNN network".
 This cell will allow you to tune how many convolutions to use, what size of convolutions (3x3, 7x7, 11x11, etc.),
 how many layers to use as well as various techniques for reducing overfitting (dropout, batch_normalization, etc.).
@@ -69,8 +80,10 @@ Here, you can select things like where do you want your model to be saved, how m
 optimizer to use (sgd, adam, etc.).
 After running this cell you will now be training. Depending on your selections you will likely be waiting anywhere
 from 15mins to many hours.
-This part of the process utilizes a GPU for computation. This speeds up computation _significantly_.
-
-
+This part of the process should utilize a GPU for computation. This speeds up computation _significantly_.
+From here, we will have an output file in the models/ dir. Type that model path name into the 
+classify_kaggle_data.py script. This is what will actually give us our predictions via an output file
+called output.csv.
+Now, we are ready to submit our testing data. output.csv contains the predictions on the testing data.
 
 
