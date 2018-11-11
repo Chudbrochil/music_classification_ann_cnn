@@ -5,9 +5,8 @@ Tristin Glunt - tglunt3unm.edu
 
 Required libraries for execution:
 Anaconda (at least 4.5.11)
-- We need NumPy, SciPy, matplotlib, keras
+- We need NumPy, SciPy, matplotlib, keras, Jupyter Notebook
 librosa (at least 0.6.2)
-
 
 Recommended libraries:
 A CUDA-capable video card (We used a GTX 1050 and a GTX 1060)
@@ -36,7 +35,7 @@ In order to make it worth it, we'd need to spend $5/hr or more which isn't reall
 cnn_classify.ipynb
 This is the Jupyter notebook where we train a deep Convolutional Neural Network only.
 
-build_cnn_data-augmentation.ipynb
+all_models.ipynb
 This was ultimately what we were using in our final testing and tuning. It involves training a CNN
 and leaves an additional cell for running more epochs later on. This is where we make confusion
 matrices for CNN/ANN as well as do data augmentation for the data. The data augmentation is an

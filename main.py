@@ -26,14 +26,14 @@ def main():
 
         # Training
         au_dir = base_dir + "/genres"
-        wav_dir = base_dir + "/mel-256/split_" + str(split_size) + "/wavfiles"
-        png_dir = base_dir + "/mel-256/split_" + str(split_size) + "/pngfiles"
+        wav_dir = base_dir + "/mel-128/split_" + str(split_size) + "/wavfiles"
+        png_dir = base_dir + "/mel-128/split_" + str(split_size) + "/pngfiles"
         make_fresh_data(au_dir, wav_dir, png_dir, split_size)
 
         # Validation
         au_dir = base_dir + "/validation"
-        wav_dir = base_dir + "/mel-256/split_" + str(split_size) + "/validation_wavfiles"
-        png_dir = base_dir + "/mel-256/split_" + str(split_size) + "/validation_pngfiles"
+        wav_dir = base_dir + "/mel-128/split_" + str(split_size) + "/validation_wavfiles"
+        png_dir = base_dir + "/mel-128/split_" + str(split_size) + "/validation_pngfiles"
         make_fresh_data(au_dir, wav_dir, png_dir, split_size)
 
     # Step 1
@@ -218,11 +218,11 @@ def convert_training_images(split_size):
     y_train = []
     label = []
     current_wd = os.getcwd()
-    for file in os.listdir(current_wd + "/mel-128/split_" + str(split_size) + "/pngfiles"):
+    for file in os.listdir(current_wd + "/mel-256/split_" + str(split_size) + "/pngfiles"):
         print(file)
-        image = imread(current_wd + "/mel-128/split_" + str(split_size) + "/pngfiles/" + file)
+        image = imread(current_wd + "/mel-256/split_" + str(split_size) + "/pngfiles/" + file)
         image = image[:, :, :3]
-        # image = image.reshape([124, 174, 3])
+        #image = image.reshape([128, 128, 3])
         X_train.append(image)
 
         if "blues" in file:
@@ -250,8 +250,8 @@ def convert_training_images(split_size):
 
     print(np.array(X_train).shape)
     print(np.array(y_train).shape)
-    np.array(X_train).dump("X_mel128_train_" + str(split_size) + ".dat")
-    np.array(y_train).dump("y_mel128_train_" + str(split_size) + ".dat")
+    np.array(X_train).dump("X_mel256_train_" + str(split_size) + ".dat")
+    np.array(y_train).dump("y_mel256_train_" + str(split_size) + ".dat")
 
 
 # convert_validation_images()
@@ -259,16 +259,16 @@ def convert_training_images(split_size):
 def convert_validation_images(split_size):
     X_test = []
     current_wd = os.getcwd()
-    for file in os.listdir(current_wd + "/mel-128/split_" + str(split_size) + "/validation_pngfiles"):
+    for file in os.listdir(current_wd + "/mel-256/split_" + str(split_size) + "/validation_pngfiles"):
         print(file)
-        image = imread(current_wd + "/mel-128/split_" + str(split_size) + "/validation_pngfiles/" + file)
+        image = imread(current_wd + "/mel-256/split_" + str(split_size) + "/validation_pngfiles/" + file)
         image = image[:, :, :3]
         # image = image.reshape([124, 174, 3])
         print(image.shape)
         X_test.append(image)
 
     print(np.array(X_test).shape)
-    np.array(X_test).dump("X_mel128_test_" + str(split_size) + ".dat")
+    np.array(X_test).dump("X_mel256_test_" + str(split_size) + ".dat")
 
 
 
