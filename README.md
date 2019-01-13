@@ -2,6 +2,7 @@ README for Project 3, CS529 - Machine Learning
 Anthony Galczak - agalczak@unm.edu - WGalczak@gmail.com
 Tristin Glunt - tglunt3unm.edu
 
+https://www.kaggle.com/c/project-1-music-classifier-cs529-2018
 
 Required libraries for execution:
 Anaconda (at least 4.5.11)
